@@ -17,6 +17,9 @@ import ArrowForward from '@material-ui/icons/ArrowForward';
 import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles((theme) => ({
+    card: {
+        'background-color': '#e9e7fc'
+    },
     info: {
         height: '100%',
         display: 'flex',
@@ -36,7 +39,7 @@ const useStyles = makeStyles((theme) => ({
 function LoginCard() {
     const classes = useStyles();
     return(
-        <Card>
+        <Card className={classes.card}>
             <CardContent>
             <Typography className={classes.title} variant='h5' align="center" color="textSecondary">
                 Please Log In

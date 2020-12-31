@@ -2,7 +2,8 @@ import './App.css';
 import React from 'react';
 import { Container,
         Grid} from '@material-ui/core';
-import {ZipCard, WeatherCard} from './Weather';
+import WeatherCard from './WeatherCard';
+import ZipCard from './ZipCard';
 import {LoginCard, GreetingCard} from './Login';
 import { withStyles } from '@material-ui/core/styles';
 
@@ -19,11 +20,21 @@ const useStyles = (theme) => ({
 
 // const cards = [1,2,3];
 
+function zipcodeIsValid(zipcode, cb) {
+  const params = new URLSearchParams({ zipcode });
+  fetch(process.env.REACT_APP_API_ENDPOINT + '/weather?' + params)
+    .then(res => cb(res.status === 200))
+    .catch(err => console.error(err))
+}
+
 class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {cards: [],
-    logged: false, zipcode: ""};
+    logged: false, 
+    zipcode: "",
+    zipError: false,
+    zipHelperText: ""};
     this.submitZip = this.submitZip.bind(this);
     this.handleZipcodeChange = this.handleZipcodeChange.bind(this);
     this.removeZip = this.removeZip.bind(this);
@@ -36,9 +47,21 @@ class App extends React.Component {
   submitZip() {
     if (!this.state.zipcode) return;
     if (this.state.cards.includes(this.state.zipcode)) return;
-    this.setState({
-        cards: this.state.cards.concat([this.state.zipcode]),
-        zipcode:""
+    // check if valid zipcode
+    zipcodeIsValid(this.state.zipcode, (valid) => {
+      if (valid) {
+        this.setState({
+          cards: this.state.cards.concat([this.state.zipcode]),
+          zipcode:"",
+          zipError: false,
+          zipHelperText: ""
+        })
+      } else {
+        this.setState({
+          zipError: true,
+          zipHelperText: "Invalid Zipcode"
+        });
+      }
     })
   }
 
@@ -67,11 +90,16 @@ class App extends React.Component {
         >
           {this.state.cards.map((zipcode) => (
                 <Grid item xs={12} sm={6} md={3}>
-                  <WeatherCard city="Buffalo" weather={{temp: 30, humidity: 50, condition: "Cloudy"}} zipcode={zipcode} removeZip={this.removeZip} />
+                  <WeatherCard zipcode={zipcode} removeZip={this.removeZip} />
                 </Grid>
               ))}
           <Grid item xs={12} sm={6} md={3}>
-            <ZipCard submitZip={this.submitZip} zipcode={this.state.zipcode} handleZipcodeChange={this.handleZipcodeChange}/>
+            <ZipCard 
+            submitZip={this.submitZip} 
+            zipcode={this.state.zipcode} 
+            handleZipcodeChange={this.handleZipcodeChange}
+            error={this.state.zipError}
+            errorText={this.state.zipHelperText}/>
           </Grid>
         </Grid>
       </Container>

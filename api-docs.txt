@@ -1,0 +1,48 @@
+GET: /api/weather
+    Parameters:
+        zipcode: 5 digits
+    Response:
+        JSON with fields:
+            city
+            temperature
+            humidity
+            windSpeed
+            error (check for error condition)
+
+POST: /api/getToken
+    Body:
+        JSON with fields:
+            Email
+            Password
+    Response:
+        JSON with fields:
+            token (JSON web Token)
+            errror (check for error conditions)
+
+GET: /api/user/getLocations
+    Header:
+        Authorization
+    Response:
+        JSON fields:
+            location
+            error
+
+POST: /api/user/setLocations
+    Header:
+        Authorization
+    Body:
+        JSON fields:
+            locations
+    Response:
+        success (boolean)
+        error (message)
+
+POST: /api/signup
+    Body:
+        JSON with fields:
+            Email
+            Password
+    Response:
+        JSON with fields
+            Token
+            error

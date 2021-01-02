@@ -16,7 +16,14 @@ const useStyles = (theme) => ({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    'background-color': '#a0def5'
+    'background-image': 'linear-gradient(to top left, #62bfed, #def7ff)'
+  },
+  buttons: {
+    paddingTop: theme.spacing(2),
+    paddingBottom: theme.spacing(0),
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   title: {
     display: 'flex',
@@ -28,8 +35,8 @@ const useStyles = (theme) => ({
     paddingBottom: theme.spacing(3),
   },
   button: {
-    paddingRight: theme.spacing(1),
-    paddingLeft: theme.spacing(0),
+    paddingRight: theme.spacing(0.5),
+    paddingLeft: theme.spacing(0.5),
   }
   });
 
@@ -53,6 +60,7 @@ class WeatherCard extends React.Component {
     fetch(process.env.REACT_APP_API_ENDPOINT + '/weather?' + params)
       .then(res => res.json())
       .then(data => {
+        if (data.error) throw Error(data.error);
         this.setState({
           city: data.city,
           condition: data.condition,
@@ -94,14 +102,14 @@ class WeatherCard extends React.Component {
             </Typography>
             </Container>
             {/* Buttons */}
-            <Container className={classes.card}>
+            <Container className={classes.buttons}>
               <Container className={classes.button}>
               <Button variant="contained" size="small" color="default" onClick={e => this.fetchWeather()}>
                   Refresh
               </Button>
               </Container>
               <Container className={classes.button} >
-              <Button variant="contained" size="small" color="default" onClick={e => this.props.removeZip(this.props.zipcode)}>
+              <Button size="small" color="secondary" onClick={e => this.props.removeZip(this.props.zipcode)}>
                   Remove
               </Button>
               </Container>

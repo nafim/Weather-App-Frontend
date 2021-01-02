@@ -21,7 +21,7 @@ const useStyles = makeStyles(theme => ({
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        'background-color': '#a2e4fc'
+        'background-image': 'linear-gradient(to top left, #cdebff, #cdebff)'
     },
     title: {
         display: 'flex',

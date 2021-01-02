@@ -4,7 +4,7 @@ import { Container,
         Grid} from '@material-ui/core';
 import WeatherCard from './WeatherCard';
 import ZipCard from './ZipCard';
-import {LoginCard, GreetingCard} from './Login';
+import UserCard from './User/User.js';
 import { withStyles } from '@material-ui/core/styles';
 
 const useStyles = (theme) => ({
@@ -18,26 +18,81 @@ const useStyles = (theme) => ({
   }
 });
 
-// const cards = [1,2,3];
-
 function zipcodeIsValid(zipcode, cb) {
   const params = new URLSearchParams({ zipcode });
   fetch(process.env.REACT_APP_API_ENDPOINT + '/weather?' + params)
-    .then(res => cb(res.status === 200))
-    .catch(err => console.error(err))
+  .then(res => res.json())  
+  .then(data => {
+      if (data.error) {
+        throw Error(data.error);
+      } else {
+        return cb(true);
+      }
+      })
+    .catch(err => cb(false))
+}
+
+function setLocations(locations) {
+  const token = localStorage.getItem('weather-app-token');
+  fetch(process.env.REACT_APP_API_ENDPOINT + "/user/setLocations", {
+    method: "POST",
+    headers: {
+    "Content-Type": 'application/json', 
+    'Authorization': 'Bearer ' + token
+    },
+    body: JSON.stringify({
+      locations
+    })
+})
+  .then(res => res.json())
+  .then(data => {
+      console.log(data);
+  })
 }
 
 class App extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {cards: [],
+
+    this.state = {
+    cards: [],
     logged: false, 
     zipcode: "",
     zipError: false,
     zipHelperText: ""};
+
     this.submitZip = this.submitZip.bind(this);
     this.handleZipcodeChange = this.handleZipcodeChange.bind(this);
     this.removeZip = this.removeZip.bind(this);
+    this.handleMergeCards = this.handleMergeCards.bind(this);
+    this.handleLogoutCardUpdate = this.handleLogoutCardUpdate.bind(this);
+  }
+
+  handleMergeCards(cards) {
+    const newCards = []
+    this.state.cards.forEach(card => {
+      if (!newCards.includes(card)) {
+        newCards.push(card);
+      }
+    })
+    cards.forEach(card => {
+      if (!newCards.includes(card)) {
+        newCards.push(card);
+      }
+    })
+    this.setState(
+      {
+        cards: newCards
+      }
+    )
+  }
+
+  handleLogoutCardUpdate() {
+    this.setState(
+      {
+        cards: []
+      }
+    )
   }
 
   handleZipcodeChange(event) {
@@ -70,15 +125,24 @@ class App extends React.Component {
     this.setState({ cards: cards });
   }
 
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.cards !== this.state.cards) {
+      setLocations(this.state.cards);
+    }
+  }
+  
+
   render() {
     const {classes} = this.props;
     return (
       <Container>
-        {/* Login container */}
+        {/* User container */}
         <Container className={classes.login}>
         <Grid className={classes.centered}>
           <Grid item xs={12} md={9}>
-          <LoginCard />
+          <UserCard
+            handleMergeCards={this.handleMergeCards}
+            handleLogoutCardUpdate={this.handleLogoutCardUpdate}/>
           </Grid>
         </Grid>
         </Container>

@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import { UserStatus } from './constants';
 import Login from './Login';
 import Greeting from './Greeting';
+import SignUp from './SignUp';
+import Reset from './Reset';
 
 // User Card Logic
 class UserCard extends React.Component {
@@ -38,6 +40,21 @@ class UserCard extends React.Component {
                 <Greeting
                     usser={"user"}
                     handleLogoutCardUpdate={this.props.handleLogoutCardUpdate}
+                    setStatus={this.setStatus}
+                />
+            )
+        // if user is signing up render the sign up card
+        } else if (this.state.status === UserStatus.SIGNING_UP) {
+            return(
+                <SignUp
+                    handleMergeCards={this.props.handleMergeCards}
+                    setStatus={this.setStatus}
+                />
+            )
+        // if user is resetting password, render the reset card
+        } else if (this.state.status === UserStatus.RESET_PASSWORD) {
+            return(
+                <Reset
                     setStatus={this.setStatus}
                 />
             )

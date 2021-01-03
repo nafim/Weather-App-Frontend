@@ -39,7 +39,7 @@ function ZipCard({ submitZip, zipcode, handleZipcodeChange, error, errorText }) 
                 <Typography className={classes.title} align="center" color="textSecondary">
                     Enter a zipcode
             </Typography>
-                <form onSubmit={(e) => {
+                <form noValidate autoComplete="off" onSubmit={(e) => {
                     e.preventDefault();
                     submitZip();
                 }}>

@@ -12,6 +12,7 @@ import {
     IconButton,
     Link,
     Snackbar,
+    Divider,
     } from '@material-ui/core';
 import ArrowForward from '@material-ui/icons/ArrowForward';
 import Alert from '@material-ui/lab/Alert';
@@ -152,6 +153,7 @@ class Login extends React.Component {
                 setEmail={this.setEmail}
                 setPassword={this.setPassword}
                 setError={this.setError}
+                setStatus={this.props.setStatus}
                 handleLogin={this.handleLogin}
                 error={this.state.error}
                 errorText={this.state.errorText}
@@ -166,7 +168,7 @@ Login.propTypes = {
 }
 
 // Login Card Logic
-function LoginCard({email, password, setEmail, setPassword, setError, handleLogin, error, errorText}) {
+function LoginCard({email, password, setEmail, setPassword, setError, setStatus, handleLogin, error, errorText}) {
     const classes = useStyles();
     const handleCloseError = (event, reason) => {
         if (reason === 'clickaway') {
@@ -180,6 +182,7 @@ function LoginCard({email, password, setEmail, setPassword, setError, handleLogi
         <Typography className={classes.title} variant='h5' align="center" color="textSecondary">
             Please Log In
         </Typography>
+        <Divider variant="middle" />
         <div className={classes.title}>
             <Snackbar 
             open={error} 
@@ -200,7 +203,10 @@ function LoginCard({email, password, setEmail, setPassword, setError, handleLogi
                 alignItems="flex-start"
             >
                 <Grid item>
-                    <form noValidate autoComplete="off">
+                <form noValidate autoComplete="off" onSubmit={(e) => {
+                        e.preventDefault();
+                        handleLogin();
+                    }}>
                         <FormControl className={clsx(classes.margin, classes.textField)} variant="filled" error={error}>
                         <InputLabel htmlFor="email">Email</InputLabel>
                         <FilledInput
@@ -245,8 +251,20 @@ function LoginCard({email, password, setEmail, setPassword, setError, handleLogi
         {/* Registration Link */}
         <Typography align="center" color="textSecondary">
             {"Don't have an account? "}
-            <Link href="#" onClick={(event) => event.preventDefault}>
+            <Link href="#" onClick={(event) => {
+                event.preventDefault();
+                setStatus(UserStatus.SIGNING_UP);
+            }}>
                 Sign Up
+            </Link>
+        </Typography>
+        <Typography align="center" color="textSecondary">
+            {"Forgot your password? "}
+            <Link href="#" onClick={(event) => {
+                event.preventDefault();
+                setStatus(UserStatus.RESET_PASSWORD);
+            }}>
+                Reset
             </Link>
         </Typography>
         </CardContent>
@@ -260,6 +278,7 @@ LoginCard.propTypes = {
     setEmail: PropTypes.func.isRequired,
     setPassword: PropTypes.func.isRequired,
     setError: PropTypes.func.isRequired,
+    setStatus: PropTypes.func.isRequired,
     handleLogin: PropTypes.func.isRequired,
     error: PropTypes.bool.isRequired,
     errorText: PropTypes.string.isRequired

@@ -51,6 +51,7 @@ const useStyles = makeStyles((theme) => ({
     button: {
         display: 'flex',
         justifyContent: 'center',
+        paddingBottom: theme.spacing(2)
     }
 }));
 
@@ -206,7 +207,9 @@ class ChangePassword extends React.Component {
     }
 
     render() {
-        if (!this.state.success) {
+        if (this.state.goHome) {
+            return <Redirect to="/" />
+        } else if (!this.state.success) {
             return (
                 <ChangePasswordCard
                 password={this.state.password}
@@ -216,10 +219,9 @@ class ChangePassword extends React.Component {
                 setErrors={this.setErrors}
                 errors={this.state.errors}
                 handleChangePassword={this.handleChangePassword}
+                setGoHome={this.setGoHome}
                 />
             )
-        } else if (this.state.goHome) {
-            return <Redirect to="/" />
         } else {
             return (
                 <SuccessCard
@@ -235,7 +237,7 @@ ChangePassword.propTypes = {
     token: PropTypes.string.isRequired
 }
 
-function ChangePasswordCard({password, confirmPassword,  setPassword, setConfirmPassword, setErrors, handleChangePassword, errors}) {
+function ChangePasswordCard({password, confirmPassword,  setPassword, setConfirmPassword, setErrors, handleChangePassword, errors, setGoHome}) {
     const classes = useStyles();
     const handleCloseError = (event, reason) => {
         if (reason === 'clickaway') {
@@ -274,7 +276,7 @@ function ChangePasswordCard({password, confirmPassword,  setPassword, setConfirm
                         </Snackbar>
                     </div>
                     {/* SignUp form */}
-                    <div className={classes.title}>
+                    <div>
                         <form className={classes.title} noValidate autoComplete="off" onSubmit={(e) => {
                             e.preventDefault();
                             handleChangePassword();
@@ -319,6 +321,11 @@ function ChangePasswordCard({password, confirmPassword,  setPassword, setConfirm
                         </form>
                     </div>
                     </CardContent>
+                    <Container className={classes.button} >
+                            <Button variant="contained" color="default" onClick={e => setGoHome(true)}>
+                                Go Home
+                            </Button>
+                        </Container>
                     </Card>
                 </Grid>
             </Grid>
@@ -334,6 +341,7 @@ ChangePasswordCard.propTypes = {
     setErrors: PropTypes.func.isRequired,
     errors: PropTypes.object.isRequired,
     handleChangePassword: PropTypes.func.isRequired,
+    setGoHome: PropTypes.func.isRequired
 }
 
 function SuccessCard({message, setGoHome}) {

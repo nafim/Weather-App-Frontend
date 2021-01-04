@@ -114,11 +114,11 @@ class SignUp extends React.Component {
         .then(data => {
             // if token is invalid, then set user as not logged in yet, and delete existing token
             if (data.error) {
-                console.log(data.error);
                 localStorage.removeItem('weather-app-token');
                 return this.props.setStatus(UserStatus.LOGGING_IN);
             }
             this.props.handleMergeCards(data.locations);
+            this.props.setUser(data.user);
             this.props.setStatus(UserStatus.LOGGED_IN);
         })
     }
@@ -236,6 +236,7 @@ class SignUp extends React.Component {
 }
 
 SignUp.propTypes = {
+    setUser: PropTypes.func.isRequired,
     handleMergeCards: PropTypes.func.isRequired,
     setStatus: PropTypes.func.isRequired
 }

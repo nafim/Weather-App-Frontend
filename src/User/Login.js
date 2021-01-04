@@ -101,6 +101,7 @@ class Login extends React.Component {
                 return this.props.setStatus(UserStatus.LOGGING_IN);
             }
             this.props.handleMergeCards(data.locations);
+            this.props.setUser(data.user);
             this.props.setStatus(UserStatus.LOGGED_IN);
         })
     }
@@ -123,7 +124,6 @@ class Login extends React.Component {
             // if user/password if invalid, there will be data.error
             if (data.error) {
                 this.setError(true, "Invalid email and password combination")
-                this.setEmail("");
                 return this.setPassword("");
             }
             localStorage.setItem('weather-app-token', data.token);
@@ -164,6 +164,7 @@ class Login extends React.Component {
 
 Login.propTypes = {
     handleMergeCards: PropTypes.func.isRequired,
+    setUser: PropTypes.func.isRequired,
     setStatus: PropTypes.func.isRequired
 }
 

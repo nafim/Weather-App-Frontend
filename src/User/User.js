@@ -11,9 +11,11 @@ class UserCard extends React.Component {
     constructor(props) {
         super(props);
         this.setStatus = this.setStatus.bind(this);
+        this.setUser = this.setUser.bind(this);
         
         this.state = {
-            status: UserStatus.LOGGING_IN
+            status: UserStatus.LOGGING_IN,
+            user: ""
         };
     }
 
@@ -25,12 +27,21 @@ class UserCard extends React.Component {
         )
     }
 
+    setUser(user) {
+        this.setState(
+            {
+                user
+            }
+        )
+    }
+
     render() {
         // if not logged in render the Login Card
         if (this.state.status === UserStatus.LOGGING_IN) {
             return (
                 <Login
                     handleMergeCards={this.props.handleMergeCards}
+                    setUser={this.setUser}
                     setStatus={this.setStatus}
                 />
             )
@@ -38,7 +49,7 @@ class UserCard extends React.Component {
         } else if (this.state.status === UserStatus.LOGGED_IN) {
             return(
                 <Greeting
-                    usser={"user"}
+                    user={this.state.user}
                     handleLogoutCardUpdate={this.props.handleLogoutCardUpdate}
                     setStatus={this.setStatus}
                 />
@@ -47,6 +58,7 @@ class UserCard extends React.Component {
         } else if (this.state.status === UserStatus.SIGNING_UP) {
             return(
                 <SignUp
+                    setUser={this.setUser}
                     handleMergeCards={this.props.handleMergeCards}
                     setStatus={this.setStatus}
                 />

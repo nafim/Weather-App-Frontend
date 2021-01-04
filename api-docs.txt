@@ -26,6 +26,7 @@ GET: /api/user/getLocations
         JSON fields:
             location
             error
+            user
 
 POST: /api/user/setLocations
     Header:
